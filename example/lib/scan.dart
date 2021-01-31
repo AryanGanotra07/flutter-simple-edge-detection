@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:simple_edge_detection_example/cropping_preview.dart';
 
 import 'camera_view.dart';
+import 'crop_view.dart';
 import 'edge_detector.dart';
 import 'image_view.dart';
 
@@ -25,6 +26,7 @@ class _ScanState extends State<Scan> {
   String croppedImagePath;
   EdgeDetectionResult edgeDetectionResult;
 
+
   @override
   void initState() {
     super.initState();
@@ -35,13 +37,11 @@ class _ScanState extends State<Scan> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return Stack(
         children: <Widget>[
           _getMainWidget(),
           _getBottomBar(),
         ],
-      ),
     );
   }
 
@@ -51,14 +51,35 @@ class _ScanState extends State<Scan> {
     }
 
     if (imagePath == null && edgeDetectionResult == null) {
-      return CameraView(
-        controller: controller
+      return Stack(
+        fit: StackFit.loose,
+        children: [
+          CameraView(
+          controller: controller
+        ),
+          controller != null ?
+          Positioned.fill(
+            child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 14),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white)
+                  ),
+                  width: controller != null ? controller.value.previewSize.width/4.0 : 100,
+                  height: controller != null ? controller.value.previewSize.height/1.35 : 200,
+                  
+                )
+            ),
+          ) : Container(),
+    ],
       );
     }
 
-    return ImagePreview(
-      imagePath: imagePath,
-      edgeDetectionResult: edgeDetectionResult,
+    return
+        ImagePreview(
+          imagePath: imagePath,
+          edgeDetectionResult: edgeDetectionResult,
     );
   }
 
@@ -75,7 +96,7 @@ class _ScanState extends State<Scan> {
 
     controller = CameraController(
         cameras[0],
-        ResolutionPreset.veryHigh,
+        ResolutionPreset.max,
         enableAudio: false
     );
     controller.initialize().then((_) {
@@ -114,7 +135,11 @@ class _ScanState extends State<Scan> {
         ),
       );
     }
-
+    return FloatingActionButton(
+        foregroundColor: Colors.white,
+        child: Icon(Icons.camera_alt),
+        onPressed: onTakePictureButtonPressed,
+      );
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -158,21 +183,27 @@ class _ScanState extends State<Scan> {
     }
     return filePath;
   }
+  
+  
 
   Future _detectEdges(String filePath) async {
     if (!mounted || filePath == null) {
       return;
     }
 
-    setState(() {
-      imagePath = filePath;
-    });
+    // setState(() {
+    //   imagePath = filePath;
+    // });
 
     EdgeDetectionResult result = await EdgeDetector().detectEdges(filePath);
 
-    setState(() {
-      edgeDetectionResult = result;
-    });
+
+    
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropView(filePath, result)));
+
+    // setState(() {
+    //   edgeDetectionResult = result;
+    // });
   }
 
   Future _processImage(String filePath, EdgeDetectionResult edgeDetectionResult) async {
@@ -187,6 +218,7 @@ class _ScanState extends State<Scan> {
     }
 
     setState(() {
+
       imageCache.clearLiveImages();
       imageCache.clear();
       croppedImagePath = imagePath;
@@ -213,9 +245,9 @@ class _ScanState extends State<Scan> {
 
   Padding _getBottomBar() {
     return Padding(
-      padding: EdgeInsets.only(bottom: 32),
+      padding: EdgeInsets.all(18.0),
       child: Align(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.bottomRight,
         child: _getButtonRow()
       )
     );

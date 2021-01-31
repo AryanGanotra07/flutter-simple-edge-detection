@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'home.dart';
 import 'scan.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class EdgeDetectionApp extends StatelessWidget {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Scan(),
+      home: Home(),
     );
   }
 }
