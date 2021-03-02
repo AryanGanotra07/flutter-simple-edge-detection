@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_edge_detection_example/providers/InvoiceProvider.dart';
 
 import 'home.dart';
 import 'scan.dart';
@@ -10,12 +12,19 @@ void main() {
 class EdgeDetectionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<InvoiceProvider>(
+          create: (_) => InvoiceProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Invoice Parser',
+        theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: Home(),
       ),
-      home: Home(),
     );
   }
 }

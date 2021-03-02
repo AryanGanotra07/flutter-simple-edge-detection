@@ -1,0 +1,1 @@
+final String BASE_URL="http://3.141.19.141:5001/api/hello";
