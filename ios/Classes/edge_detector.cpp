@@ -24,10 +24,10 @@ vector<cv::Point> image_to_vector(Mat& image)
     int imageHeight = image.size().height;
 
     return {
-        cv::Point(0, 0),
-        cv::Point(imageWidth, 0),
-        cv::Point(0, imageHeight),
-        cv::Point(imageWidth, imageHeight)
+        cv::Point(imageWidth*0.125, imageHeight*0.185),
+        cv::Point(imageWidth-imageWidth*0.125, imageHeight*0.185),
+        cv::Point(imageWidth*0.125, imageHeight - imageHeight*0.185 ),
+        cv::Point(imageWidth-imageWidth*0.125, imageHeight - imageHeight*0.185)
     };
 }
 

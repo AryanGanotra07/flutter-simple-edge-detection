@@ -4,4 +4,9 @@ class MyInvoice {
   String img64;
   String name;
   MyResponse response;
+
+  MyInvoice() {
+    this.response = new MyResponse();
+    this.response.mapRespose();
+  }
 }

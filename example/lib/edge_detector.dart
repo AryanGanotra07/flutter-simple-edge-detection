@@ -9,8 +9,13 @@ class EdgeDetector {
     edgeDetectionInput.sendPort.send(result);
   }
 
+  static Future<void> startImageRotationIsolate(RotateImageInput edgeDetectionInput) async {
+    EdgeDetection.rotateImage(edgeDetectionInput.inputPath);
+    edgeDetectionInput.sendPort.send(true);
+  }
+
   static Future<void> processImageIsolate(ProcessImageInput processImageInput) async {
-    EdgeDetection.processImage(processImageInput.inputPath, processImageInput.edgeDetectionResult);
+    EdgeDetection.processImage(processImageInput.inputPath, processImageInput.tempPath, processImageInput.edgeDetectionResult);
     processImageInput.sendPort.send(true);
   }
 
@@ -29,13 +34,29 @@ class EdgeDetector {
     return await _subscribeToPort<EdgeDetectionResult>(port);
   }
 
-  Future<bool> processImage(String filePath, EdgeDetectionResult edgeDetectionResult) async {
+  Future<bool> rotateImage(String filePath) async {
+    final port = ReceivePort();
+
+    _spawnIsolate<RotateImageInput>(
+        startImageRotationIsolate,
+        RotateImageInput(
+            inputPath: filePath,
+            sendPort: port.sendPort
+        ),
+        port
+    );
+
+    return await _subscribeToPort<bool>(port);
+  }
+
+  Future<bool> processImage(String filePath, String tempPath, EdgeDetectionResult edgeDetectionResult) async {
     final port = ReceivePort();
 
     _spawnIsolate<ProcessImageInput>(
       processImageIsolate,
       ProcessImageInput(
         inputPath: filePath,
+        tempPath: tempPath,
         edgeDetectionResult: edgeDetectionResult,
         sendPort: port.sendPort
       ),
@@ -78,14 +99,27 @@ class EdgeDetectionInput {
   SendPort sendPort;
 }
 
-class ProcessImageInput {
-  ProcessImageInput({
+class RotateImageInput {
+  RotateImageInput({
     this.inputPath,
-    this.edgeDetectionResult,
     this.sendPort
   });
 
   String inputPath;
+  SendPort sendPort;
+}
+
+
+class ProcessImageInput {
+  ProcessImageInput({
+    this.inputPath,
+    this.edgeDetectionResult,
+    this.sendPort,
+    this.tempPath,
+  });
+
+  String inputPath;
+  String tempPath;
   EdgeDetectionResult edgeDetectionResult;
   SendPort sendPort;
 }

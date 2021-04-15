@@ -30,7 +30,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         fit: StackFit.expand,
         children: <Widget>[
           Center(
-            child: Text('Loading ...')
+            child: CircularProgressIndicator()
           ),
           Image.file(
             File(widget.imagePath),

@@ -18,6 +18,23 @@ Mat ImageProcessor::process_image(Mat img, float x1, float y1, float x2, float y
     return dst;
 }
 
+Mat ImageProcessor::rotate_image(Mat image) {
+
+        Mat dst;
+       cv::transpose(image, dst);
+       cv::flip(dst, dst, 1);
+       return dst;
+}
+
+Mat ImageProcessor::rotate(Mat src, double angle)
+{
+    Mat dst;
+    Point2f pt(src.cols/2., src.rows/2.);
+    Mat r = getRotationMatrix2D(pt, angle, 1.0);
+    warpAffine(src, dst, r, Size(src.cols, src.rows));
+    return dst;
+}
+
 Mat ImageProcessor::crop_and_transform(Mat img, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
     float w1 = sqrt( pow(x4 - x3 , 2) + pow(x4 - x3, 2));
     float w2 = sqrt( pow(x2 - x1 , 2) + pow(x2-x1, 2));

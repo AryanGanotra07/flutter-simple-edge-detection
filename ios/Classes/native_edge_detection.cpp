@@ -50,8 +50,20 @@ struct DetectionResult *detect_edges(char *str) {
 }
 
 extern "C" __attribute__((visibility("default"))) __attribute__((used))
+bool rotate_image(
+    char *path
+) {
+    cv::Mat mat = cv::imread(path);
+
+    cv::Mat resizedMat = ImageProcessor::rotate_image(mat);
+
+    return cv::imwrite(path, resizedMat);
+}
+
+extern "C" __attribute__((visibility("default"))) __attribute__((used))
 bool process_image(
     char *path,
+    char *tempPath,
     double topLeftX,
     double topLeftY,
     double topRightX,
@@ -75,5 +87,5 @@ bool process_image(
         bottomRightY * mat.size().height
     );
 
-    return cv::imwrite(path, resizedMat);
+    return cv::imwrite(tempPath, resizedMat);
 }

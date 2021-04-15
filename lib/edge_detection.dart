@@ -55,8 +55,15 @@ typedef DetectEdgesFunction = Pointer<NativeDetectionResult> Function(
   Pointer<Utf8> imagePath
 );
 
+typedef RotateImageFunction = Pointer<NativeDetectionResult> Function(
+    Pointer<Utf8> imagePath
+    );
+
+
+
 typedef process_image_function = Int8 Function(
   Pointer<Utf8> imagePath,
+    Pointer<Utf8> tempPath,
   Double topLeftX,
   Double topLeftY,
   Double topRightX,
@@ -69,6 +76,7 @@ typedef process_image_function = Int8 Function(
 
 typedef ProcessImageFunction = int Function(
   Pointer<Utf8> imagePath,
+    Pointer<Utf8> tempPath,
   double topLeftX,
   double topLeftY,
   double topRightX,
@@ -107,8 +115,21 @@ class EdgeDetection {
     );
   }
 
-  static Future<bool> processImage(String path, EdgeDetectionResult result) async {
+  static Future<bool> rotateImage(String path) async {
+    print("Reached here");
     DynamicLibrary nativeEdgeDetection = _getDynamicLibrary();
+    final rotateImagee = nativeEdgeDetection
+        .lookup<NativeFunction<RotateImageFunction>>("rotate_image")
+        .asFunction<RotateImageFunction>();
+    print("Returning true");
+    return rotateImagee(Utf8.toUtf8(path)) == 1;
+
+    return true;
+  }
+
+  static Future<bool> processImage(String path, String tempPath, EdgeDetectionResult result) async {
+    DynamicLibrary nativeEdgeDetection = _getDynamicLibrary();
+
 
     final processImage = nativeEdgeDetection
         .lookup<NativeFunction<process_image_function>>("process_image")
@@ -117,6 +138,7 @@ class EdgeDetection {
 
     return processImage(
         Utf8.toUtf8(path),
+        Utf8.toUtf8(tempPath),
         result.topLeft.dx,
         result.topLeft.dy,
         result.topRight.dx,
