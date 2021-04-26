@@ -18,7 +18,7 @@ class ImageService {
       // then parse the JSON.
       print("Successfully sent - " + name);
       Map<String, dynamic> _json = jsonDecode(response.body);
-      if (_json.containsKey("Error") || _json.containsKey("Status")) {
+      if (_json.containsKey("Error")) {
         print("Bad Quality Image");
         return false;
         // throw Exception("Bad Quality Image");
@@ -42,17 +42,17 @@ class ImageService {
       // If the server did return a 200 OK response,
       // then parse the JSON.
 
-      Map<String, dynamic> _json = jsonDecode(response.body);
+      Map<String, dynamic> _json = jsonDecode(jsonDecode(response.body));
       if (_json.containsKey("Error") || _json.containsKey("Status")) {
         throw Exception("Bad Quality Image");
       }
-
+      print("status code - 200");
       return MyResponse.fromJson(_json);
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       print(response.body);
-      throw Exception('Failed to load invoice');
+      throw Exception('Invoice not processed yet. Please try again in 2-3 mins.');
     }
   }
 }

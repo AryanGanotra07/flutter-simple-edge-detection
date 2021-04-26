@@ -7,6 +7,6 @@ class MyInvoice {
 
   MyInvoice() {
     this.response = new MyResponse();
-    this.response.mapRespose();
+    this.response.mapResponse();
   }
 }

@@ -317,6 +317,8 @@ class _CropViewState extends State<CropView> {
                           Navigator.of(context).pop();
                         }
                         else {
+                          Provider.of<InvoiceProvider>(context, listen: false)
+                              .addInvoice(_invoice);
                           Navigator.of(context).pop();
                         }
 

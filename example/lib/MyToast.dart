@@ -14,6 +14,5 @@ class MyToast {
         textColor: Colors.white,
         fontSize: 16.0
     );
-
   }
 }

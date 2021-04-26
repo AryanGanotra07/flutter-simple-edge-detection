@@ -32,7 +32,7 @@ class Invoices extends StatelessWidget {
                   ListTile(
                     trailing: Image.memory(base64Decode(item.img64)),
                     title: Text(item.name),
-                    subtitle: Text("Processed"),
+
                   ),
                 ],
               ),

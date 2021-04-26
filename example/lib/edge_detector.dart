@@ -11,7 +11,7 @@ class EdgeDetector {
 
   static Future<void> startImageRotationIsolate(RotateImageInput edgeDetectionInput) async {
     EdgeDetection.rotateImage(edgeDetectionInput.inputPath);
-    edgeDetectionInput.sendPort.send(true);
+    edgeDetectionInput.sendPort.send( true);
   }
 
   static Future<void> processImageIsolate(ProcessImageInput processImageInput) async {
