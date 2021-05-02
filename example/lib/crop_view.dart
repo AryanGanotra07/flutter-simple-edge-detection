@@ -286,14 +286,19 @@ class _CropViewState extends State<CropView> {
                           children: [
                   const Text('Send Invoice For Processing', style: TextStyle(color: Colors.white),),
                             RaisedButton(onPressed: () async {
-                                setModalState(() {
-                                  _processingM = true;
-    });
-                              bool success = await ImageService.fetchResponse(name, img64);
-                              setModalState(() {
-                                _processingM = false;
-                                _successM = success;
-                              });
+    //                             setModalState(() {
+    //                               _processingM = true;
+    // });
+                              ImageService.fetchResponse(name, img64);
+                              MyToast.showToast("Invoice sent for processing.");
+                              Provider.of<InvoiceProvider>(context, listen: false)
+                                  .addInvoice(_invoice);
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                              // setModalState(() {
+                              //   _processingM = false;
+                              //   // _successM = success;
+                              // });
                             } , child: Text("Process"),),
                           ],
                         ),

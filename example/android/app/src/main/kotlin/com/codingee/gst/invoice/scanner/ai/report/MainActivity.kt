@@ -1,4 +1,4 @@
-package dev.flutterclutter.simple_edge_detection_example
+package com.codingee.gst.invoice.scanner.ai.report
 
 import io.flutter.embedding.android.FlutterActivity
 
