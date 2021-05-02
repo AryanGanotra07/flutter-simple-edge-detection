@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "978263850003",
+    "project_id": "project-scan-f308d",
+    "storage_bucket": "project-scan-f308d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978263850003:android:90ff4d1cc416ffc70693e6",
+        "android_client_info": {
+          "package_name": "com.codingee.gst.invoice.scanner.ai.report"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "978263850003-m5om5b7j7622cjpn7rrco3p1qo95n9br.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codingee.gst.invoice.scanner.ai.report",
+            "certificate_hash": "1b9a3a42c8bd5ffdbb93952a8f4df63bab209ec7"
+          }
+        },
+        {
+          "client_id": "978263850003-if9s3t32nkolsu6s0iffk7ftdbp2llr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz26N8gdpFl4fKjGS65x6msJtDXhu9IW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "978263850003-if9s3t32nkolsu6s0iffk7ftdbp2llr2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
