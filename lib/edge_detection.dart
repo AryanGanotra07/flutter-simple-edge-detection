@@ -5,7 +5,6 @@ import 'dart:ui';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
 
-
 class Coordinate extends Struct {
   @Double()
   double x;
@@ -14,7 +13,7 @@ class Coordinate extends Struct {
   double y;
 
   factory Coordinate.allocate(double x, double y) =>
-      allocate<Coordinate>().ref
+      calloc<Coordinate>().ref
         ..x = x
         ..y = y;
 }
@@ -30,7 +29,7 @@ class NativeDetectionResult extends Struct {
       Pointer<Coordinate> topRight,
       Pointer<Coordinate> bottomLeft,
       Pointer<Coordinate> bottomRight) =>
-      allocate<NativeDetectionResult>().ref
+      calloc<NativeDetectionResult>().ref
         ..topLeft = topLeft
         ..topRight = topRight
         ..bottomLeft = bottomLeft
@@ -97,7 +96,7 @@ class EdgeDetection {
         .lookup<NativeFunction<DetectEdgesFunction>>("detect_edges")
         .asFunction<DetectEdgesFunction>();
 
-    NativeDetectionResult detectionResult = detectEdges(Utf8.toUtf8(path)).ref;
+    NativeDetectionResult detectionResult = detectEdges(StringUtf8Pointer(path).toNativeUtf8()).ref;
 
     return EdgeDetectionResult(
         topLeft: Offset(
@@ -122,7 +121,7 @@ class EdgeDetection {
         .lookup<NativeFunction<RotateImageFunction>>("rotate_image")
         .asFunction<RotateImageFunction>();
     print("Returning true");
-    return rotateImagee(Utf8.toUtf8(path)) == 1;
+    return rotateImagee(StringUtf8Pointer(path).toNativeUtf8()) == 1;
 
     return true;
   }
@@ -137,8 +136,8 @@ class EdgeDetection {
 
 
     return processImage(
-        Utf8.toUtf8(path),
-        Utf8.toUtf8(tempPath),
+        StringUtf8Pointer(path).toNativeUtf8(),
+        StringUtf8Pointer(tempPath).toNativeUtf8(),
         result.topLeft.dx,
         result.topLeft.dy,
         result.topRight.dx,

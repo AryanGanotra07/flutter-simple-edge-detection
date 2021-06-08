@@ -7,12 +7,13 @@ import 'package:simple_edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:simple_edge_detection_example/cropping_preview.dart';
+import 'package:simple_edge_detection_example/components/CroppingPreview.dart';
+import 'package:simple_edge_detection_example/components/ImageView.dart';
+import 'package:simple_edge_detection_example/utils/EdgeDetector.dart';
+import 'package:simple_edge_detection_example/utils/Helpers.dart';
+import 'CropView.dart';
 
-import 'camera_view.dart';
-import 'crop_view.dart';
-import 'edge_detector.dart';
-import 'image_view.dart';
+
 
 class Scan extends StatefulWidget {
   @override
@@ -38,42 +39,88 @@ class _ScanState extends State<Scan> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-        children: <Widget>[
-          _getMainWidget(),
-          _getBottomBar(),
-        ],
+    return Scaffold(
+
+      backgroundColor: Colors.transparent,
+      body: Stack(
+          children: <Widget>[
+            _getMainWidget(),
+            _getBottomBar(),
+          ],
+      ),
     );
   }
 
   Widget _getMainWidget() {
+
+    if (controller == null) {
+      return Container();
+    }
+
     if (croppedImagePath != null) {
       return ImageView(imagePath: croppedImagePath);
     }
 
+
     if (imagePath == null && edgeDetectionResult == null) {
-      return Stack(
-        fit: StackFit.loose,
-        children: [
-          CameraView(
-          controller: controller
-        ),
-          controller != null ?
-          Positioned.fill(
-            child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  // margin: EdgeInsets.only(bottom: 14),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white)
+      final size = MediaQuery.of(context).size;
+      final deviceRatio = size.width / size.height;
+      final xScale = controller.value.aspectRatio / deviceRatio;
+// Modify the yScale if you are in Landscape
+      final yScale = 1.0;
+      return Container(
+        child: AspectRatio(
+          aspectRatio: deviceRatio,
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.diagonal3Values(xScale, yScale, 1),
+            child: Stack(
+              fit: StackFit.loose,
+              children: [
+
+
+                CameraPreview(
+                controller
+              ),
+
+                Positioned.fill(
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        // margin: EdgeInsets.only(bottom: 14),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white)
+                        ),
+                        width: controller != null ? controller.value.previewSize.width/4.0 : 100,
+                        height: controller != null ? controller.value.previewSize.height/1.35 : 200,
+
+                      )
                   ),
-                  width: controller != null ? controller.value.previewSize.width/4.0 : 100,
-                  height: controller != null ? controller.value.previewSize.height/1.35 : 200,
-                  
-                )
-            ),
-          ) : Container(),
+                ),
+                Positioned.fill(
+                  child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        margin: EdgeInsets.only(left: 35, top: 50),
+                        child: IconButton(
+                          color: Colors.white,
+                          icon: Icon(
+                            Icons.arrow_back_ios_rounded,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                              Navigator.of(context).pop();
+                          },
+                        ),
+                      )
+                  ),
+                ),
+
+
     ],
+            ),
+          ),
+        ),
       );
     }
 
@@ -165,7 +212,7 @@ class _ScanState extends State<Scan> {
     );
   }
 
-  String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+  // String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
   Future<String> takePicture() async {
     if (!controller.value.isInitialized) {
@@ -176,7 +223,7 @@ class _ScanState extends State<Scan> {
     final Directory extDir = await getTemporaryDirectory();
     final String dirPath = '${extDir.path}/Pictures/flutter_test';
     await Directory(dirPath).create(recursive: true);
-    final String filePath = '$dirPath/${timestamp()}.jpg';
+    final String filePath = '$dirPath/${Helpers.timestamp()}.jpg';
 
     if (controller.value.isTakingPicture) {
       return null;
@@ -232,27 +279,27 @@ class _ScanState extends State<Scan> {
     });
   }
 
-  Future<String> createCopy(String _temp) async {
-    final File image = new File(_temp);
-
-    final Directory extDir = await getTemporaryDirectory();
-    final String dirPath = '${extDir.path}/Pictures/flutter_test';
-    await Directory(dirPath).create(recursive: true);
-    final String filePath = '$dirPath/${timestamp()}-temp.jpg';
-// copy the file to a new path
-    final File newImage = await image.copy(filePath);
-    return filePath;
-  }
+//   Future<String> createCopy(String _temp) async {
+//     final File image = new File(_temp);
+//
+//     final Directory extDir = await getTemporaryDirectory();
+//     final String dirPath = '${extDir.path}/Pictures/flutter_test';
+//     await Directory(dirPath).create(recursive: true);
+//     final String filePath = '$dirPath/${timestamp()}-temp.jpg';
+// // copy the file to a new path
+//     final File newImage = await image.copy(filePath);
+//     return filePath;
+//   }
 
   void onTakePictureButtonPressed() async {
     String filePath = await takePicture();
 
-    String  tempPath = await createCopy(filePath);
+    String  tempPath = await Helpers.createCopy(filePath);
 
 
     log('Picture saved to $filePath');
 
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropView(filePath, tempPath)));
+    Helpers.navigateTo(context, CropView(filePath, tempPath));
 
     // setState(() {
     //   imagePath = filePath;

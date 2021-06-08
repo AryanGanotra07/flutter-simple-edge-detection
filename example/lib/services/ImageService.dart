@@ -1,16 +1,18 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:simple_edge_detection_example/constants/contant.dart';
 import 'package:simple_edge_detection_example/models/response.dart';
 import 'package:http/http.dart' as http;
 
 class ImageService {
   static Future<bool> fetchResponse(String name, String img64) async {
-    Map data = {"name": name + ".jpeg", "image": img64};
+    String deviceid = await FirebaseMessaging.instance.getToken();
+    Map data = {"name": name + ".jpeg", "image": img64, "deviceid" : deviceid };
 
     var body = json.encode(data);
 
-    final response = await http.post(BASE_URL, body: body);
+    final response = await http.post(Uri.parse(BASE_URL), body: body);
     print(response.statusCode);
 
     if (response.statusCode == 200) {
@@ -37,7 +39,7 @@ class ImageService {
   }
 
   static Future<MyResponse> fetchResponseFromName(String name) async {
-    final response = await http.get(BASE_URL + "?name=" + name + ".json");
+    final response = await http.get(Uri.parse(BASE_URL + "?name=" + name + ".json"));
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.

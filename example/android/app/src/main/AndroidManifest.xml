@@ -7,10 +7,13 @@
          FlutterApplication and put your custom class here. -->
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name=".Application"
         android:usesCleartextTraffic="true"
         android:label="GST Invoice Scanner"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

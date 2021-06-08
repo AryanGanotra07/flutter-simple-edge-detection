@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:simple_edge_detection_example/components/ImageView.dart';
 import 'package:simple_edge_detection_example/models/response.dart';
 import 'package:simple_edge_detection_example/services/ImageService.dart';
 
-import 'image_view.dart';
 
 class ProcessView extends StatefulWidget {
   final String _imagePath;
